@@ -11,7 +11,7 @@ blocJams.config( function($stateProvider, $locationProvider) {
   // Pass in state name and config options.
   $stateProvider
     .state('landing', {
-      url: '/landing',
+      url: '/',
       controller: 'Landing.controller',
       templateUrl: '/templates/landing.html'
     })
@@ -25,5 +25,9 @@ blocJams.config( function($stateProvider, $locationProvider) {
       controller: 'Album.controller',
       templateUrl: '/templates/album.html'
     })
+
+});
+
+blocJams.controller('blocJams', function($scope) {
 
 });
