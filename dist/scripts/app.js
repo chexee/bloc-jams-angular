@@ -28,6 +28,8 @@ blocJams.config( function($stateProvider, $locationProvider) {
 
 });
 
-blocJams.controller('blocJams', function($scope) {
+blocJams.controller('Landing', function($scope) {});
 
-});
+blocJams.controller('Collection', function($scope) {});
+
+blocJams.controller('Album', function($scope) {});
