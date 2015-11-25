@@ -12,23 +12,25 @@ blocJams.config( function($stateProvider, $locationProvider) {
   $stateProvider
     .state('landing', {
       url: '/',
-      controller: 'Landing.controller',
+      controller: 'Landing',
       templateUrl: '/templates/landing.html'
     })
     .state('collection', {
       url: '/collection',
-      controller: 'Collection.controller',
+      controller: 'Collection',
       templateUrl: '/templates/collection.html'
     })
     .state('album', {
       url: '/album',
-      controller: 'Album.controller',
+      controller: 'Album',
       templateUrl: '/templates/album.html'
     })
 
 });
 
-blocJams.controller('Landing', function($scope) {});
+blocJams.controller('Landing', function($scope) {
+  $scope.helloWorld = "hello world";
+});
 
 blocJams.controller('Collection', function($scope) {});
 
