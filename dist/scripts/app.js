@@ -29,7 +29,7 @@ blocJams.config( function($stateProvider, $locationProvider) {
 });
 
 blocJams.controller('Landing', function($scope) {
-  $scope.helloWorld = "hello world";
+  $scope.tagline = "Turn the music up!";
 });
 
 blocJams.controller('Collection', function($scope) {});
