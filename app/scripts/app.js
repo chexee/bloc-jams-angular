@@ -35,4 +35,6 @@ blocJams.controller('Collection', function ($scope) {
   $scope.albums = [albumPicasso, albumRothko, albumMarconi]
 })
 
-blocJams.controller('Album', function ($scope) {})
+blocJams.controller('Album', function ($scope) {
+  $scope.album = albumPicasso
+})
