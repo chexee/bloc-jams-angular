@@ -41,8 +41,11 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   $scope.album = albumPicasso
   SongPlayer.currentAlbum = $scope.album
 
-  $scope.isCurrentSong = function(song) {
+  $scope.isCurrentSong = function (song) {
     return SongPlayer.isCurrentSong(song)
+  }
+  $scope.isPlaying = function () {
+    return SongPlayer.isPlaying
   }
   $scope.playSong = function () {
     if (!SongPlayer.currentSong) {
@@ -54,8 +57,11 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   $scope.pauseSong = function () {
     SongPlayer.pauseSong()
   }
-  $scope.isPlaying = function () {
-    return SongPlayer.isPlaying
+  $scope.goToNext = function () {
+    SongPlayer.goToNext()
+  }
+  $scope.goToPrevious = function () {
+    SongPlayer.goToPrevious()
   }
 })
 
@@ -73,18 +79,16 @@ blocJams.service('SongPlayer', function () {
       this.currentSoundFile.pause()
     },
     playSong: function (song) {
-      if (this.isPlaying) {
-        this.pauseSong()
-      }
-      this.isPlaying = true
+      buzz.all().pause()
       if (song) {
         this.setCurrentSong(song)
       }
       this.currentSoundFile.play()
+      this.isPlaying = true
     },
     setCurrentSong: function (song) {
       this.currentSong = song
-      this.currentSoundFile = new buzz.sound (this.currentSong.audioUrl, {
+      this.currentSoundFile = new buzz.sound(this.currentSong.audioUrl, {
         formats: ['mp3'],
         preload: true
       })
@@ -93,16 +97,48 @@ blocJams.service('SongPlayer', function () {
       if (this.currentSongfile) {
         this.currentSoundFile.setVolume(amount)
       }
-      this.currentVolume = amount;
+      this.currentVolume = amount
     },
     isCurrentSong: function (song) {
       return song === this.currentSong
     },
     goToNext: function () {
+      if (!this.currentSong) {
+        alert('Start playing some music first!')
+        return
+      }
+      var songsArr = this.currentAlbum.songs
+      var currentSongIndex = songsArr.indexOf(this.currentSong)
+
+      if (currentSongIndex === songsArr.length - 1) {
+        this.setCurrentSong(songsArr[0])
+      } else {
+        currentSongIndex++
+        this.setCurrentSong(songsArr[currentSongIndex])
+      }
+
+      // If previous song was playing, play next. Otherwise, keep paused.
+      if (this.isPlaying) { this.playSong() }
     },
     goToPrevious: function () {
-    },
+      if (!this.currentSong) {
+        alert('Start playing some music first!')
+        return
+      }
 
+      var songsArr = this.currentAlbum.songs
+      var currentSongIndex = songsArr.indexOf(this.currentSong)
+
+      if (currentSongIndex === 0) {
+        this.setCurrentSong(songsArr[songsArr.length - 1])
+      } else {
+        currentSongIndex--
+        this.setCurrentSong(songsArr[currentSongIndex])
+      }
+
+      // If previous song was playing, play next. Otherwise, keep paused.
+      if (this.isPlaying) { this.playSong() }
+    }
 
   }
 })
