@@ -33,7 +33,7 @@ var albumRothko = {
   artist: 'Mark Rothko',
   label: 'Multiforms',
   year: '1949',
-  albumArtUrl: 'assets/images/album_covers/20.png',
+  albumArtUrl: 'assets/images/album_covers/04.png',
   songs: [
     { name: 'Rust and orange',                  length: '2:31'  },
     { name: 'Magenta, Black, Green on Orange',  length: '3:41'  },

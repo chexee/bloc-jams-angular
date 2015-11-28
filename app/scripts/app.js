@@ -1,11 +1,11 @@
 // Declare Angular module
-var blocJams = angular.module('blocJams', ['ui.router']);
+var blocJams = angular.module('blocJams', ['ui.router'])
 
-blocJams.config( function($stateProvider, $locationProvider) {
+blocJams.config(function ($stateProvider, $locationProvider) {
   $locationProvider.html5Mode({
     enabled: true,
     requireBase: false
-  });
+  })
 
   // Add album state.
   // Pass in state name and config options.
@@ -25,13 +25,14 @@ blocJams.config( function($stateProvider, $locationProvider) {
       controller: 'Album',
       templateUrl: '/templates/album.html'
     })
+})
 
-});
+blocJams.controller('Landing', function ($scope) {
+  $scope.tagline = 'Turn the music up!'
+})
 
-blocJams.controller('Landing', function($scope) {
-  $scope.tagline = "Turn the music up!";
-});
+blocJams.controller('Collection', function ($scope) {
+  $scope.albums = [albumPicasso, albumRothko, albumMarconi]
+})
 
-blocJams.controller('Collection', function($scope) {});
-
-blocJams.controller('Album', function($scope) {});
+blocJams.controller('Album', function ($scope) {})
