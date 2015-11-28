@@ -33,15 +33,21 @@ blocJams.controller('Landing', function ($scope) {
   $scope.tagline = 'Turn the music up!'
 })
 
-blocJams.controller('Collection', function ($scope) {
+blocJams.controller('Collection', function ($scope, SongPlayer) {
   $scope.albums = [albumPicasso, albumRothko, albumMarconi]
+
+  $scope.setAlbum = function () {
+    SongPlayer.setAlbum(this.album)
+  }
 })
 
 blocJams.controller('Album', function ($scope, SongPlayer) {
   var albums = [albumPicasso, albumRothko, albumMarconi]
-
-  SongPlayer.currentAlbum = albums[0]
-  $scope.album = SongPlayer.currentAlbum
+  if (!SongPlayer.currentAlbum) {
+    $scope.album = albums[0]
+  } else {
+    $scope.album = SongPlayer.currentAlbum
+  }
 
   $scope.isCurrentSong = function (song) {
     return SongPlayer.isCurrentSong(song)
@@ -72,9 +78,8 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     } else {
       albumIndex++
     }
-    SongPlayer.currentAlbum = albums[albumIndex]
+    SongPlayer.setAlbum(albums[albumIndex])
     $scope.album = SongPlayer.currentAlbum
-    console.log(SongPlayer.currentAlbum)
   }
 })
 
@@ -98,6 +103,9 @@ blocJams.service('SongPlayer', function () {
       }
       this.currentSoundFile.play()
       this.isPlaying = true
+    },
+    setAlbum: function (album) {
+      this.currentAlbum = album;
     },
     setCurrentSong: function (song) {
       this.currentSong = song
