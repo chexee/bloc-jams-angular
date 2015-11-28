@@ -14,8 +14,9 @@
       <table class="album-view-song-list">
         <tr class="album-view-song-item" ng-repeat="song in album.songs" ng-mouseenter="showPlay = true" ng-mouseleave="showPlay = false">
           <td class="song-item-number" align="center" data-song-number="{{$index + 1}}">
-            <span ng-hide="showPlay">{{$index + 1}}</span>
-            <a class="album-song-button" ng-show="showPlay"><span class="ion-play"></span></a>
+            <span ng-hide="showPlay || isPlaying">{{$index + 1}}</span>
+            <a class="album-song-button" ng-show="showPlay && !isPlaying" ng-click="showPlay = false; isPlaying = true;"><span class="ion-play"></span></a>
+            <a class="album-song-button" ng-show="isPlaying" ng-click="isPlaying = false" ><span class="ion-pause"></span></a>
           <td>
           <td class="song-item-title">{{song.name}}</td>
           <td class="song-item-duration">{{song.length}}</td>
