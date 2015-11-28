@@ -40,6 +40,19 @@ blocJams.controller('Collection', function ($scope) {
 blocJams.controller('Album', function ($scope, SongPlayer) {
   $scope.album = albumPicasso
   SongPlayer.currentAlbum = $scope.album
+
+  $scope.isCurrentSong = function(song) {
+    return SongPlayer.isCurrentSong(song)
+  }
+  $scope.playSong = function () {
+    SongPlayer.playSong(this.song)
+  }
+  $scope.pauseSong = function () {
+    SongPlayer.pauseSong()
+  }
+  $scope.isPlaying = function () {
+    return SongPlayer.isPlaying
+  }
 })
 
 // Services
@@ -55,10 +68,13 @@ blocJams.service('SongPlayer', function () {
       this.isPlaying = false
       this.currentSoundFile.pause()
     },
-    playSong: function () {
+    playSong: function (song) {
+      if (this.isPlaying) {
+        this.pauseSong()
+      }
       this.isPlaying = true
+      this.setCurrentSong(song)
       this.currentSoundFile.play()
-      this.currentSong = song
     },
     setCurrentSong: function (song) {
       this.currentSong = song
@@ -72,6 +88,9 @@ blocJams.service('SongPlayer', function () {
         this.currentSoundFile.setVolume(amount)
       }
       this.currentVolume = amount;
+    },
+    isCurrentSong: function (song) {
+      return song === this.currentSong
     },
     goToNext: function () {
     },
