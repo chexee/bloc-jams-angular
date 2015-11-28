@@ -1,9 +1,9 @@
-<div ng-controller="Album">
+<div ng-controller="Album" class="album">
   <main class="album-view container narrow">
       <!-- Cover and info -->
       <section class="clearfix">
           <div class="column half">
-              <a href="#" ng-click="test()"> <img ng-src="{{album.albumArtUrl}}" class="album-cover-art" /></a>
+              <a href="#" ng-click="goToNextAlbum()"> <img ng-src="{{album.albumArtUrl}}" class="album-cover-art" /></a>
           </div>
           <div class="album-view-details column half">
               <h2 class="album-view-title">{{album.name}}</h2>
@@ -41,7 +41,7 @@
           </div>
           <div class="control-group currently-playing">
               <h2 class="song-name"></h2>
-              <h2 class="artist-song-mobile"></h2>
+              <h2 class="artist-song-mobile">{{album.artist}}</h2>
               <h3 class="artist-name">{{album.artist}}</h3>
               <div class="seek-control">
                   <div class="seek-bar">

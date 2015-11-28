@@ -38,8 +38,10 @@ blocJams.controller('Collection', function ($scope) {
 })
 
 blocJams.controller('Album', function ($scope, SongPlayer) {
-  $scope.album = albumPicasso
-  SongPlayer.currentAlbum = $scope.album
+  var albums = [albumPicasso, albumRothko, albumMarconi]
+
+  SongPlayer.currentAlbum = albums[0]
+  $scope.album = SongPlayer.currentAlbum
 
   $scope.isCurrentSong = function (song) {
     return SongPlayer.isCurrentSong(song)
@@ -62,6 +64,17 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   }
   $scope.goToPrevious = function () {
     SongPlayer.goToPrevious()
+  }
+  $scope.goToNextAlbum = function() {
+    var albumIndex = albums.indexOf(SongPlayer.currentAlbum)
+    if (albumIndex === albums.length - 1) {
+      albumIndex = 0
+    } else {
+      albumIndex++
+    }
+    SongPlayer.currentAlbum = albums[albumIndex]
+    $scope.album = SongPlayer.currentAlbum
+    console.log(SongPlayer.currentAlbum)
   }
 })
 
