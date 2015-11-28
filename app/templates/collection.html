@@ -3,7 +3,7 @@
   <section class="album-covers container clearfix">
 
     <div class="collection-album-container column fourth" ng-repeat="album in albums">
-      <img ng-src="/{{album.albumArtUrl}}" />
+      <img ng-src="{{album.albumArtUrl}}" />
       <div class="collection-album-info caption">
         <p>
           <a class="album-name" ui-sref="album">{{ album.name }}</a><br />
