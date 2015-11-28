@@ -45,7 +45,11 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     return SongPlayer.isCurrentSong(song)
   }
   $scope.playSong = function () {
-    SongPlayer.playSong(this.song)
+    if (!SongPlayer.currentSong) {
+      SongPlayer.playSong(SongPlayer.currentAlbum.songs[0])
+    } else {
+      SongPlayer.playSong(this.song)
+    }
   }
   $scope.pauseSong = function () {
     SongPlayer.pauseSong()
@@ -73,7 +77,9 @@ blocJams.service('SongPlayer', function () {
         this.pauseSong()
       }
       this.isPlaying = true
-      this.setCurrentSong(song)
+      if (song) {
+        this.setCurrentSong(song)
+      }
       this.currentSoundFile.play()
     },
     setCurrentSong: function (song) {
