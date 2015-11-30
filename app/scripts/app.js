@@ -83,6 +83,15 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   }
 })
 
+// Directives
+
+blocJams.directive('slider', function(){
+  return {
+    restrict: 'E',
+    templateUrl: '/templates/slider.html'
+  }
+});
+
 // Services
 
 blocJams.service('SongPlayer', function () {
