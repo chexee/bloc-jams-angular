@@ -45,9 +45,12 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   var albums = [albumPicasso, albumRothko, albumMarconi]
   if (!SongPlayer.currentAlbum) {
     $scope.album = albums[0]
+    SongPlayer.currentAlbum = $scope.album
   } else {
     $scope.album = SongPlayer.currentAlbum
   }
+
+  $scope.currentVolume = SongPlayer.currentVolume;
 
   $scope.isCurrentSong = function (song) {
     return SongPlayer.isCurrentSong(song)
@@ -81,14 +84,49 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     SongPlayer.setAlbum(albums[albumIndex])
     $scope.album = SongPlayer.currentAlbum
   }
+  $scope.setVolume = function(amount) {
+    SongPlayer.setVolume(amount);
+  }
 })
 
 // Directives
 
-blocJams.directive('slider', function(){
+blocJams.directive('slider', function () {
   return {
     restrict: 'E',
-    templateUrl: '/templates/slider.html'
+    templateUrl: '/templates/slider.html',
+    scope: { },
+    link: function(scope, element, attrs){
+      var $thumb = angular.element(element[0].querySelector('.thumb'))
+      var $fill = angular.element(element[0].querySelector('.fill'))
+
+      var updateSlider = function() {
+        var sliderPosition = element[0].getBoundingClientRect()
+        var sliderWidth = sliderPosition.right - sliderPosition.left
+        var offsetX = Math.max(0, event.clientX - sliderPosition.left);
+
+        var sliderFillRatio = offsetX / sliderWidth
+        sliderFillRatio = Math.min(1, sliderFillRatio)
+
+        $fill.css('width', sliderFillRatio * 100 + '%')
+        $thumb.css('left', sliderFillRatio * 100 + '%')
+      }
+
+      element.on('mousedown', function (event) {
+        angular.element(document).bind('mousemove', function(event){
+          updateSlider()
+        })
+        angular.element(document).bind('mouseup', function(){
+          angular.element(document).unbind('mousemove')
+          angular.element(document).unbind('mouseup')
+        })
+      })
+
+      element.on('click', function (event) {
+        updateSlider()
+      })
+
+    }
   }
 });
 
@@ -124,7 +162,7 @@ blocJams.service('SongPlayer', function () {
       })
     },
     setVolume: function (amount) {
-      if (this.currentSongfile) {
+      if (this.currentSoundFile) {
         this.currentSoundFile.setVolume(amount)
       }
       this.currentVolume = amount
