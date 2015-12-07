@@ -42,14 +42,6 @@ blocJams.controller('Collection', function ($scope, SongPlayer) {
 })
 
 blocJams.controller('Album', function ($scope, SongPlayer) {
-  var albums = [albumPicasso, albumRothko, albumMarconi]
-  if (!SongPlayer.currentAlbum) {
-    $scope.album = albums[0]
-    SongPlayer.currentAlbum = $scope.album
-  } else {
-    $scope.album = SongPlayer.currentAlbum
-  }
-
   $scope.isCurrentSong = function (song) {
     return SongPlayer.isCurrentSong(song)
   }
@@ -57,11 +49,7 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     return SongPlayer.isPlaying
   }
   $scope.playSong = function () {
-    if (!SongPlayer.currentSong) {
-      SongPlayer.playSong(SongPlayer.currentAlbum.songs[0])
-    } else {
-      SongPlayer.playSong(this.song)
-    }
+    SongPlayer.playSong(this.song)
   }
   $scope.pauseSong = function () {
     SongPlayer.pauseSong()
@@ -86,7 +74,22 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     SongPlayer.setVolume(amount)
     $scope.volume = amount
   }
+  $scope.setSongProgress = function(percentProgress) {
+    SongPlayer.setSongProgress(percentProgress)
+    $scope.songProgress = percentProgress
+  }
 
+  var albums = [albumPicasso, albumRothko, albumMarconi]
+  if (!SongPlayer.currentAlbum) {
+    $scope.album = albums[0]
+    SongPlayer.currentAlbum = $scope.album
+  } else {
+    $scope.album = SongPlayer.currentAlbum
+  }
+  $scope.setSongProgress(0)
+  $scope.setDefaultSong = function () {
+    SongPlayer.setCurrentSong($scope.album.songs[0])
+  }
 })
 
 // Directives
@@ -168,6 +171,11 @@ blocJams.service('SongPlayer', function () {
         this.currentSoundFile.setVolume(amount)
       }
       this.currentVolume = amount
+    },
+    setSongProgress: function (percentProgress) {
+      if (this.currentSoundFile) {
+        this.currentSoundFile.setPercent(percentProgress)
+      }
     },
     isCurrentSong: function (song) {
       return song === this.currentSong

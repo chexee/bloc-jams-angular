@@ -28,7 +28,7 @@
               <a class="previous" ng-click="goToPrevious()">
                   <span class="ion-skip-backward"></span>
               </a>
-              <a class="play-pause" ng-hide="isPlaying()" ng-click="playSong()">
+              <a class="play-pause" ng-hide="isPlaying()" ng-click="setDefaultSong(); playSong()">
                   <span class="ion-play"></span>
               </a>
               <a class="play-pause" ng-show="isPlaying()" ng-click="pauseSong()">
@@ -43,7 +43,7 @@
               <h2 class="artist-song-mobile">{{album.artist}}</h2>
               <h3 class="artist-name">{{album.artist}}</h3>
               <div class="seek-control">
-                  <slider type="songProgress"></slider>
+                  <slider type="songProgress" ng-mouseup="setSongProgress(songProgress); $event.destroy()"></slider>
                   <div class="current-time">2:30</div>
                   <div class="total-time"></div>
               </div>
