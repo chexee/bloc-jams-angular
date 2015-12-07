@@ -21,7 +21,6 @@
           <td class="song-item-title">{{song.name}}</td>
           <td class="song-item-duration">{{song.length}}</td>
       </table>
-
   </main>
   <section class="player-bar">
       <div class="container">
@@ -44,14 +43,14 @@
               <h2 class="artist-song-mobile">{{album.artist}}</h2>
               <h3 class="artist-name">{{album.artist}}</h3>
               <div class="seek-control">
-                  <slider></slider>
+                  <slider type="songProgress"></slider>
                   <div class="current-time">2:30</div>
                   <div class="total-time"></div>
               </div>
           </div>
           <div class="control-group volume">
               <span class="ion-volume-high icon"></span>
-              <slider></slider>
+              <slider type="volume" ng-mousedown="setVolume(volume)" ng-mousemove="setVolume(volume)" ng-mouseup="$event.destroy()"></slider>
           </div>
       </div>
   </section>

@@ -50,8 +50,6 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     $scope.album = SongPlayer.currentAlbum
   }
 
-  $scope.currentVolume = SongPlayer.currentVolume;
-
   $scope.isCurrentSong = function (song) {
     return SongPlayer.isCurrentSong(song)
   }
@@ -85,8 +83,10 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     $scope.album = SongPlayer.currentAlbum
   }
   $scope.setVolume = function(amount) {
-    SongPlayer.setVolume(amount);
+    SongPlayer.setVolume(amount)
+    $scope.volume = amount
   }
+
 })
 
 // Directives
@@ -95,7 +95,9 @@ blocJams.directive('slider', function () {
   return {
     restrict: 'E',
     templateUrl: '/templates/slider.html',
-    scope: { },
+    scope: {
+      type: '=type'
+    },
     link: function(scope, element, attrs){
       var $thumb = angular.element(element[0].querySelector('.thumb'))
       var $fill = angular.element(element[0].querySelector('.fill'))
@@ -110,6 +112,7 @@ blocJams.directive('slider', function () {
 
         $fill.css('width', sliderFillRatio * 100 + '%')
         $thumb.css('left', sliderFillRatio * 100 + '%')
+        scope.type = sliderFillRatio * 100
       }
 
       element.on('mousedown', function (event) {
@@ -121,7 +124,6 @@ blocJams.directive('slider', function () {
           angular.element(document).unbind('mouseup')
         })
       })
-
       element.on('click', function (event) {
         updateSlider()
       })
