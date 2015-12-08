@@ -90,6 +90,15 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   $scope.setDefaultSong = function () {
     SongPlayer.setCurrentSong($scope.album.songs[0])
   }
+  console.log(SongPlayer.currentSongFile)
+
+  if (SongPlayer.currentSongFile) {
+    SongPlayer.currentSongFile.bind('timeupdate', function (event) {
+      $scope.setDefaultSong()
+      $scope.setSongProgress(SongPlayer.currentSongFile.getTime())
+      console.log(SongPlayer.currentSongFile.getTime())
+    })
+  }
 })
 
 // Directives
