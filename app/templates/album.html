@@ -15,7 +15,7 @@
         <tr class="album-view-song-item" ng-repeat="song in album.songs" ng-mouseenter="onHover = true" ng-mouseleave="onHover = false">
           <td class="song-item-number" align="center" data-song-number="{{$index + 1}}">
             <span ng-hide="onHover || isCurrentSong(this.song)">{{$index + 1}}</span>
-            <a class="album-song-button" ng-show="(onHover && !isCurrentSong(this.song)) || (isCurrentSong(this.song) && !isPlaying())" ng-click="playSong()"><span class="ion-play"></span></a>
+            <a class="album-song-button" ng-show="(onHover && !isCurrentSong(this.song)) || (isCurrentSong(this.song) && !isPlaying())" ng-click="playSong(this.song)"><span class="ion-play"></span></a>
             <a class="album-song-button" ng-show="isCurrentSong(this.song) && isPlaying()" ng-click="pauseSong()" ><span class="ion-pause"></span></a>
           <td>
           <td class="song-item-title">{{song.name}}</td>
@@ -28,7 +28,7 @@
               <a class="previous" ng-click="goToPrevious()">
                   <span class="ion-skip-backward"></span>
               </a>
-              <a class="play-pause" ng-hide="isPlaying()" ng-click="setDefaultSong(); playSong()">
+              <a class="play-pause" ng-hide="isPlaying()" ng-click="playSong()">
                   <span class="ion-play"></span>
               </a>
               <a class="play-pause" ng-show="isPlaying()" ng-click="pauseSong()">

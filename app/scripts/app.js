@@ -48,8 +48,8 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   $scope.isPlaying = function () {
     return SongPlayer.isPlaying
   }
-  $scope.playSong = function () {
-    SongPlayer.playSong(this.song)
+  $scope.playSong = function (song) {
+    SongPlayer.playSong(song)
   }
   $scope.pauseSong = function () {
     SongPlayer.pauseSong()
@@ -86,6 +86,7 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
   } else {
     $scope.album = SongPlayer.currentAlbum
   }
+
   $scope.setSongProgress(0)
   $scope.setDefaultSong = function () {
     SongPlayer.setCurrentSong($scope.album.songs[0])
@@ -161,6 +162,8 @@ blocJams.service('SongPlayer', function () {
       buzz.all().pause()
       if (song) {
         this.setCurrentSong(song)
+      } else if (!this.currentSong) {
+        this.setCurrentSong(this.currentAlbum.songs[0])
       }
       this.currentSoundFile.play()
       this.isPlaying = true
