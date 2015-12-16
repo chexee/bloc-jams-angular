@@ -45,8 +45,8 @@
               <div class="seek-control">
                   <slider type="songProgress" on-change="setSongProgress(songProgress)"
                   ng-mouseup="$event.destroy()"></slider>
-                  <div class="current-time">{{currentTime}}</div>
-                  <div class="total-time">{{currentSongLength}}</div>
+                  <div class="current-time">{{currentTime | timecode}}</div>
+                  <div class="total-time">{{currentSongLength | timecode}}</div>
               </div>
           </div>
           <div class="control-group volume">

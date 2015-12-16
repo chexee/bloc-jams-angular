@@ -82,9 +82,9 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
 
   $scope.renderPlayerBar = function () {
     SongPlayer.currentSoundFile.bind('timeupdate', function(){
-      $scope.currentTime = buzz.toTimer( SongPlayer.currentSoundFile.getTime() )
+      $scope.currentTime = SongPlayer.currentSoundFile.getTime()
       $scope.currentSongName = SongPlayer.currentSong.name
-      $scope.currentSongLength = buzz.toTimer( SongPlayer.currentSoundFile.getDuration() )
+      $scope.currentSongLength = SongPlayer.currentSoundFile.getDuration()
       $scope.songProgress = (SongPlayer.currentSoundFile.getTime() / SongPlayer.currentSoundFile.getDuration()) * 100
       $scope.$apply()
     })
@@ -99,7 +99,6 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     } else {
       $scope.album = SongPlayer.currentAlbum
     }
-
 
     // Set volume
     $scope.setVolume(100)
@@ -120,7 +119,7 @@ blocJams.directive('slider', function () {
       value: '=type',
       onChange: '&'
     },
-    link: function(scope, element, attrs){
+    link: function(scope, element, attrs) {
       var $thumb = angular.element(element[0].querySelector('.thumb'))
       var $fill = angular.element(element[0].querySelector('.fill'))
 
@@ -165,6 +164,23 @@ blocJams.directive('slider', function () {
     }
   }
 });
+
+blocJams.directive('point', function ($window) {
+  return {
+    restrict: 'C',
+    link: function(scope, element) {
+      var scrollPosition = element[0].getBoundingClientRect().top - $window.innerHeight
+      if ($window.innerHeight > 950) {
+        element.addClass('point-animate-in-finish');
+      }
+      angular.element($window).on( 'scroll', function() {
+        if ($window.scrollY >= scrollPosition) {
+          element.addClass('point-animate-in-finish');
+        }
+      });
+    }
+  }
+})
 
 // Services
 
@@ -258,5 +274,37 @@ blocJams.service('SongPlayer', function () {
       if (this.isPlaying) { this.playSong() }
     }
 
+  }
+})
+
+// Filters
+
+blocJams.filter('timecode', function () {
+  return function(timeInSeconds) {
+    var minutes
+    var seconds
+
+    if (typeof timeInSeconds === 'number') {
+      minutes = Math.round(timeInSeconds / 60)
+      seconds = Math.round(timeInSeconds % 60)
+    } else {
+      minutes = 0
+      seconds = 0
+    }
+
+
+    var twoDigitPad = function (inputNum) {
+      inputNum = String(inputNum)
+      if (inputNum) {
+        while (inputNum.length < 2) { inputNum = '0' + inputNum }
+      } else if (inputNum.length > 2) {
+        return inputNum.slice(0,2)
+      } else {
+        return '00'
+      }
+      return inputNum
+    }
+
+    return minutes + ':' + twoDigitPad(seconds)
   }
 })
