@@ -15,13 +15,12 @@
         <tr class="album-view-song-item" ng-repeat="song in album.songs" ng-mouseenter="onHover = true" ng-mouseleave="onHover = false">
           <td class="song-item-number" align="center" data-song-number="{{$index + 1}}">
             <span ng-hide="onHover || isCurrentSong(this.song)">{{$index + 1}}</span>
-            <a class="album-song-button" ng-show="(onHover && !isCurrentSong(this.song)) || (isCurrentSong(this.song) && !isPlaying())" ng-click="playSong()"><span class="ion-play"></span></a>
+            <a class="album-song-button" ng-show="(onHover && !isCurrentSong(this.song)) || (isCurrentSong(this.song) && !isPlaying())" ng-click="playSong(this.song)"><span class="ion-play"></span></a>
             <a class="album-song-button" ng-show="isCurrentSong(this.song) && isPlaying()" ng-click="pauseSong()" ><span class="ion-pause"></span></a>
           <td>
           <td class="song-item-title">{{song.name}}</td>
           <td class="song-item-duration">{{song.length}}</td>
       </table>
-
   </main>
   <section class="player-bar">
       <div class="container">
@@ -40,24 +39,19 @@
               </a>
           </div>
           <div class="control-group currently-playing">
-              <h2 class="song-name"></h2>
+              <h2 class="song-name">{{currentSongName}}</h2>
               <h2 class="artist-song-mobile">{{album.artist}}</h2>
               <h3 class="artist-name">{{album.artist}}</h3>
               <div class="seek-control">
-                  <div class="seek-bar">
-                      <div class="fill"></div>
-                      <div class="thumb"></div>
-                  </div>
-                  <div class="current-time">2:30</div>
-                  <div class="total-time"></div>
+                  <slider type="songProgress" on-change="setSongProgress(songProgress)"
+                  ng-mouseup="$event.destroy()"></slider>
+                  <div class="current-time">{{currentTime}}</div>
+                  <div class="total-time">{{currentSongLength}}</div>
               </div>
           </div>
           <div class="control-group volume">
               <span class="ion-volume-high icon"></span>
-              <div class="seek-bar">
-                  <div class="fill"></div>
-                  <div class="thumb"></div>
-              </div>
+              <slider type="volume" on-change="setVolume(volume)" ng-mouseup="$event.destroy()"></slider>
           </div>
       </div>
   </section>
