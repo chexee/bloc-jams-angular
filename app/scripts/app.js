@@ -100,7 +100,6 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
       $scope.album = SongPlayer.currentAlbum
     }
 
-
     // Set volume
     $scope.setVolume(100)
   }
@@ -120,7 +119,7 @@ blocJams.directive('slider', function () {
       value: '=type',
       onChange: '&'
     },
-    link: function(scope, element, attrs){
+    link: function(scope, element, attrs) {
       var $thumb = angular.element(element[0].querySelector('.thumb'))
       var $fill = angular.element(element[0].querySelector('.fill'))
 
@@ -165,6 +164,23 @@ blocJams.directive('slider', function () {
     }
   }
 });
+
+blocJams.directive('point', function ($window) {
+  return {
+    restrict: 'C',
+    link: function(scope, element) {
+      var scrollPosition = element[0].getBoundingClientRect().top - $window.innerHeight
+      if ($window.innerHeight > 950) {
+        element.addClass('point-animate-in-finish');
+      }
+      angular.element($window).on( 'scroll', function() {
+        if ($window.scrollY >= scrollPosition) {
+          element.addClass('point-animate-in-finish');
+        }
+      });
+    }
+  }
+})
 
 // Services
 
