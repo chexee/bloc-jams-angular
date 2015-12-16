@@ -43,14 +43,15 @@
               <h2 class="artist-song-mobile">{{album.artist}}</h2>
               <h3 class="artist-name">{{album.artist}}</h3>
               <div class="seek-control">
-                  <slider type="songProgress"></slider>
+                  <slider type="songProgress" on-change="setSongProgress(songProgress)"
+                  ng-mouseup="$event.destroy()"></slider>
                   <div class="current-time">{{currentTime}}</div>
                   <div class="total-time">{{currentSongLength}}</div>
               </div>
           </div>
           <div class="control-group volume">
               <span class="ion-volume-high icon"></span>
-              <slider type="volume" ng-mousedown="setVolume(volume)" ng-mousemove="setVolume(volume)" ng-mouseup="$event.destroy()"></slider>
+              <slider type="volume" on-change="setVolume(volume)" ng-mouseup="$event.destroy()"></slider>
           </div>
       </div>
   </section>

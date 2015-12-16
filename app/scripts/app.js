@@ -43,35 +43,22 @@ blocJams.controller('Collection', function ($scope, SongPlayer) {
 
 blocJams.controller('Album', function ($scope, SongPlayer) {
 
-  $scope.isCurrentSong = function (song) {
-    return SongPlayer.isCurrentSong(song)
-  }
-  $scope.isPlaying = function () {
-    return SongPlayer.isPlaying
-  }
+  $scope.isCurrentSong = function (song) { return SongPlayer.isCurrentSong(song) }
+  $scope.isPlaying = function () { return SongPlayer.isPlaying }
+
   $scope.playSong = function (song) {
     SongPlayer.playSong(song)
-    $scope.updatePlayerBar()
+    $scope.renderPlayerBar()
+  }
+  $scope.pauseSong = function () { SongPlayer.pauseSong() }
 
-  }
-  $scope.pauseSong = function () {
-    SongPlayer.pauseSong()
-  }
-  $scope.updatePlayerBar = function () {
-    SongPlayer.currentSoundFile.bind('timeupdate', function(){
-      $scope.currentTime = buzz.toTimer( SongPlayer.currentSoundFile.getTime() )
-      $scope.currentSongName = SongPlayer.currentSong.name
-      $scope.currentSongLength = buzz.toTimer( SongPlayer.currentSoundFile.getDuration() )
-      $scope.$apply()
-    })
-  }
   $scope.goToNext = function () {
     SongPlayer.goToNext()
-    $scope.updatePlayerBar()
+    $scope.renderPlayerBar()
   }
   $scope.goToPrevious = function () {
     SongPlayer.goToPrevious()
-    $scope.updatePlayerBar()
+    $scope.renderPlayerBar()
   }
   $scope.goToNextAlbum = function() {
     var albumIndex = albums.indexOf(SongPlayer.currentAlbum)
@@ -88,15 +75,38 @@ blocJams.controller('Album', function ($scope, SongPlayer) {
     SongPlayer.setVolume(amount)
     $scope.volume = amount
   }
+  $scope.setSongProgress = function(songProgress) {
+    SongPlayer.setSongProgress(songProgress)
+    $scope.songProgress = songProgress
+  }
 
+  $scope.renderPlayerBar = function () {
+    SongPlayer.currentSoundFile.bind('timeupdate', function(){
+      $scope.currentTime = buzz.toTimer( SongPlayer.currentSoundFile.getTime() )
+      $scope.currentSongName = SongPlayer.currentSong.name
+      $scope.currentSongLength = buzz.toTimer( SongPlayer.currentSoundFile.getDuration() )
+      $scope.songProgress = (SongPlayer.currentSoundFile.getTime() / SongPlayer.currentSoundFile.getDuration()) * 100
+      $scope.$apply()
+    })
+  }
+
+  // Initalize
+  $scope.init = function () {
+    // Set current album
+    if (!SongPlayer.currentAlbum) {
+      $scope.album = albums[0]
+      SongPlayer.currentAlbum = $scope.album
+    } else {
+      $scope.album = SongPlayer.currentAlbum
+    }
+
+
+    // Set volume
+    $scope.setVolume(100)
+  }
 
   var albums = [albumPicasso, albumRothko, albumMarconi]
-  if (!SongPlayer.currentAlbum) {
-    $scope.album = albums[0]
-    SongPlayer.currentAlbum = $scope.album
-  } else {
-    $scope.album = SongPlayer.currentAlbum
-  }
+  $scope.init()
 
 })
 
@@ -107,7 +117,8 @@ blocJams.directive('slider', function () {
     restrict: 'E',
     templateUrl: '/templates/slider.html',
     scope: {
-      value: '=type'
+      value: '=type',
+      onChange: '&'
     },
     link: function(scope, element, attrs){
       var $thumb = angular.element(element[0].querySelector('.thumb'))
@@ -120,25 +131,37 @@ blocJams.directive('slider', function () {
         return Math.min(1, (offsetX / sliderWidth))
       }
 
-      var updateSlider = function(sliderFillRatio) {
+      var updateSlider = function (sliderFillRatio) {
         $fill.css('width', sliderFillRatio * 100 + '%')
         $thumb.css('left', sliderFillRatio * 100 + '%')
-        scope.value = sliderFillRatio * 100
       }
 
       element.on('mousedown', function (event) {
-        angular.element(document).bind('mousemove', function(event){
+
+        angular.element (document).bind ('mousemove', function(event){
           updateSlider(getSliderFillRatioOnEvent())
+          scope.value  = getSliderFillRatioOnEvent() * 100
+          scope.$apply()
         })
-        angular.element(document).bind('mouseup', function(){
+
+        angular.element (document).bind ('mouseup', function(){
+          updateSlider(getSliderFillRatioOnEvent())
+          scope.value = getSliderFillRatioOnEvent() * 100
+
+          // Update scope.value in controller
+          scope.$apply()
+          scope.onChange()
+
           angular.element(document).unbind('mousemove')
           angular.element(document).unbind('mouseup')
         })
-      })
-      element.on('click', function () {
-        updateSlider(getSliderFillRatioOnEvent())
+
       })
 
+      // Update slider if something else changes the value
+      scope.$watch('value', function() {
+        updateSlider(scope.value / 100)
+      })
     }
   }
 });
@@ -152,6 +175,7 @@ blocJams.service('SongPlayer', function () {
     currentSong: '',
     currentVolume: '',
     currentSoundFile: null,
+
     pauseSong: function () {
       this.isPlaying = false
       this.currentSoundFile.pause()
@@ -166,6 +190,11 @@ blocJams.service('SongPlayer', function () {
       this.currentSoundFile.play()
       this.isPlaying = true
     },
+
+    isCurrentSong: function (song) {
+      return song === this.currentSong
+    },
+
     setAlbum: function (album) {
       this.currentAlbum = album;
     },
@@ -176,15 +205,21 @@ blocJams.service('SongPlayer', function () {
         preload: true
       })
     },
+    setSongProgress: function(songProgressPercent) {
+      if (this.currentSong) {
+        this.currentSoundFile.setPercent(songProgressPercent)
+      } else {
+        console.log('Error: Cannot set progress if there is no song playing')
+        return
+      }
+    },
     setVolume: function (amount) {
       if (this.currentSoundFile) {
         this.currentSoundFile.setVolume(amount)
       }
       this.currentVolume = amount
     },
-    isCurrentSong: function (song) {
-      return song === this.currentSong
-    },
+
     goToNext: function () {
       if (!this.currentSong) {
         alert('Start playing some music first!')
